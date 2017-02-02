@@ -14,8 +14,6 @@ def main():
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     PINK = (255, 0, 255)
-    Yellow = (166, 100, 200)
-    Brown = (100, 25, 60)
 
     #starting tie location and destination
     tiex = 10
@@ -63,19 +61,21 @@ def main():
         fileref.close()
         return(x,y)
 
-    def moveValid(destinationx,destinationy):#FIX QUIRKS ON EDGES
+    def moveValid(destinationx,destinationy,check):#FIX QUIRKS ON EDGES
 
         # all below is checking edges, if hits edge it goes as far as possible
         soundObj.play()
         # all below is checking edges, if hits edge it goes as far as possible
-        if destinationx <= 10:
-            destinationx = 10
-        elif destinationx >= 400:
-            destinationx = 400
-        if destinationy >= 300:
-            destinationy = 300
-        elif destinationy <= 60:
-            destinationy = 60
+        if check=='x':
+            if destinationx <= 10:
+                destinationx = 10
+            elif destinationx >= 400:
+                destinationx = 400
+        if check=='y':
+            if destinationy >= 300:
+                destinationy = 300
+            elif destinationy <= 70:
+                destinationy = 70
         return (destinationx,destinationy)
 
     def mouseCheck(mousex,mousey,destinationx,destinationy):
@@ -158,19 +158,19 @@ def main():
                 moving=True
                 if event.key in (K_LEFT, K_a):#LEFT
 
-                    destinationx,destinationy=moveValid(destinationx,destinationy)
+                    destinationx,destinationy=moveValid(destinationx,destinationy,'x')#only check the x value
                     destinationx -= 10
                 elif event.key in (K_UP,K_w):#UP
 
-                    destinationx, destinationy = moveValid(destinationx, destinationy)
+                    destinationx, destinationy = moveValid(destinationx, destinationy,'y')
                     destinationy -= 10
                 elif event.key in (K_DOWN,K_s):#DOWN
 
-                    destinationx, destinationy = moveValid(destinationx, destinationy)
+                    destinationx, destinationy = moveValid(destinationx, destinationy,'y')
                     destinationy += 10
                 elif event.key in (K_RIGHT,K_d):#RIGHT
 
-                    destinationx, destinationy = moveValid(destinationx, destinationy)
+                    destinationx, destinationy = moveValid(destinationx, destinationy,'x')
                     destinationx += 10
                 print(destinationx,destinationy)
 
