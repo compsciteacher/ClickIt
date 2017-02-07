@@ -6,7 +6,7 @@ pygame.init()
 def main():
     #check if tie is moving
     moving=False
-
+    shot=False
     #basic colors
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -20,7 +20,9 @@ def main():
     tiey = 60
     destinationx=10
     destinationy=60
-
+    movingL=False
+    laserx=0
+    lasery=0
     #tie image
     Tie = pygame.image.load('tie.png')
 
@@ -36,6 +38,9 @@ def main():
     #save buttom
     save_unclicked=pygame.image.load('save_unclicked.png')
     save_clicked=pygame.image.load('save_clicked.png')
+
+    #laser
+    laser=pygame.image.load('tiny_laser.png')
 
     #audio
     soundObj = pygame.mixer.Sound('tie.wav')
@@ -115,7 +120,7 @@ def main():
         return (destinationx,destinationy,exitButton)
     while True:# the main game loop
         #surface
-
+        print(movingL)
         DISPLAYSURF = pygame.display.set_mode((500, 400))
         pygame.display.set_caption('TIE Flyer')
 
@@ -124,6 +129,7 @@ def main():
         DISPLAYSURF.blit(exit_button, (10, 10))
         DISPLAYSURF.blit(save_unclicked,(390,10))
         DISPLAYSURF.blit(load_unclicked,(200,10))
+
 
         if exitButton:#if exit has been clicked, this way the image changes below, then on update exits after .1 sec
             pygame.time.wait(100)
@@ -139,6 +145,14 @@ def main():
                 tiey -= 10
             elif tiey < destinationy:
                 tiey += 10
+        if movingL:
+            # only check the x value
+            destinationx -= 10
+        if shot:#checks to see if shot and adjusts location
+            laserstart+=15
+            DISPLAYSURF.blit(laser, (laserstart, tiey + 50))
+            if laserstart>600:
+                shot=False
 
         FPS = 30 # frames per second setting
         fpsClock = pygame.time.Clock()
@@ -148,18 +162,24 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            elif event.type == MOUSEBUTTONDOWN: #if player clicks, changes tie to moving, and gets destination to nearest 10
+            if event.type == MOUSEBUTTONDOWN: #if player clicks, changes tie to moving, and gets destination to nearest 10
                 mousex, mousey = event.pos
                 moving=True
                 destinationx,destinationy,exitButton=mouseCheck(mousex,mousey,destinationx,destinationy)
 
                 #key movements
-            elif event.type == KEYUP:
+            if event.type == KEYDOWN:
                 moving=True
-                if event.key in (K_LEFT, K_a):#LEFT
+                if event.key==(K_1):
+                    laserstart=tiex+50
+                    DISPLAYSURF.blit(laser, (laserstart, tiey+50))
+                    shot=True#changes laser to shot, will then blit at each new location
 
-                    destinationx,destinationy=moveValid(destinationx,destinationy,'x')#only check the x value
-                    destinationx -= 10
+                if event.key in (K_LEFT, K_a):#LEFT
+                    movingL=True
+                    destinationx, destinationy = moveValid(destinationx, destinationy, 'x')
+
+
                 elif event.key in (K_UP,K_w):#UP
 
                     destinationx, destinationy = moveValid(destinationx, destinationy,'y')
@@ -173,7 +193,9 @@ def main():
                     destinationx, destinationy = moveValid(destinationx, destinationy,'x')
                     destinationx += 10
                 print(destinationx,destinationy)
-
+            elif event.type==KEYUP and event.key==K_LEFT:
+                movingL=False
+                print('WHAT?')
         #print(mousex,mousey) this was for debugging
 
         # run the game loop
