@@ -120,10 +120,12 @@ def main():
 
         return (destinationx,destinationy,exitButton)
     while True:# the main game loop
-        FPS = 30 # frames per second setting
-        fpsClock = pygame.time.Clock()
         #surface
-
+        key = pygame.key.get_pressed()
+        if key[pygame.K_a]:
+            moving=True
+            print('a')
+            destinationx -= 10
         DISPLAYSURF = pygame.display.set_mode((500, 400))
         pygame.display.set_caption('TIE Flyer')
 
@@ -132,6 +134,7 @@ def main():
         DISPLAYSURF.blit(exit_button, (10, 10))
         DISPLAYSURF.blit(save_unclicked,(390,10))
         DISPLAYSURF.blit(load_unclicked,(200,10))
+
 
         if exitButton:#if exit has been clicked, this way the image changes below, then on update exits after .1 sec
             pygame.time.wait(100)
@@ -148,13 +151,14 @@ def main():
             elif tiey < destinationy:
                 tiey += 10
 
-        if shot:#checks to see if shot and then moves laser shot
+        if shot:#checks to see if shot and adjusts location
             laserstart+=15
             DISPLAYSURF.blit(laser, (laserstart, tiey + 50))
             if laserstart>600:
                 shot=False
 
-
+        FPS = 30 # frames per second setting
+        fpsClock = pygame.time.Clock()
 
         for event in pygame.event.get():#event handling
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -167,36 +171,39 @@ def main():
                 destinationx,destinationy,exitButton=mouseCheck(mousex,mousey,destinationx,destinationy)
 
                 #key movements
-            if event.type==KEYUP:
-                if event.key == K_a:
-                    print("grr")
-                    movingL=False
+            # if event.type==KEYUP:
+            #     if event.key == K_a:
+            #         print("grr")
+            #         movingL=False
             if event.type == KEYDOWN:
                 moving=True
                 if event.key==(K_1):
                     laserstart=tiex+50
                     DISPLAYSURF.blit(laser, (laserstart, tiey+50))
                     shot=True#changes laser to shot, will then blit at each new location
-
-                if event.key in (K_LEFT, K_a):#LEFT
-
-                    destinationx, destinationy = moveValid(destinationx, destinationy, 'x')
-                    destinationx-=10
-
-                elif event.key in (K_UP,K_w):#UP
-
-                    destinationx, destinationy = moveValid(destinationx, destinationy,'y')
-                    destinationy -= 10
-                elif event.key in (K_DOWN,K_s):#DOWN
-
-                    destinationx, destinationy = moveValid(destinationx, destinationy,'y')
-                    destinationy += 10
-                elif event.key in (K_RIGHT,K_d):#RIGHT
-
-                    destinationx, destinationy = moveValid(destinationx, destinationy,'x')
-                    destinationx += 10
-                print(destinationx,destinationy)
-
+            #
+            #     if event.key in (K_LEFT, K_a):#LEFT
+            #         movingL=True
+            #         destinationx, destinationy = moveValid(destinationx, destinationy, 'x')
+            #         destinationx-=10
+            #
+            #     elif event.key in (K_UP,K_w):#UP
+            #
+            #         destinationx, destinationy = moveValid(destinationx, destinationy,'y')
+            #         destinationy -= 10
+            #     elif event.key in (K_DOWN,K_s):#DOWN
+            #
+            #         destinationx, destinationy = moveValid(destinationx, destinationy,'y')
+            #         destinationy += 10
+            #     elif event.key in (K_RIGHT,K_d):#RIGHT
+            #
+            #         destinationx, destinationy = moveValid(destinationx, destinationy,'x')
+            #         destinationx += 10
+            #     print(destinationx,destinationy)
+            # if movingL:
+            #     print (movingL)
+            #     #only check the x value
+            #     destinationx -= 10
 
 
         #print(mousex,mousey) this was for debugging
